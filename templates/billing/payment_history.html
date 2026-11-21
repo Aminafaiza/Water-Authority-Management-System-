@@ -1,0 +1,189 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Payment History | AquaCare{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <div class="mb-4">
+        <h2>My Payment History</h2>
+        <p class="text-muted">
+            View your submitted payments and verification status.
+        </p>
+    </div>
+
+    <!-- Statistics -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm p-3">
+                <small>Total Payments</small>
+                <h3>{{ total_payments }}</h3>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm p-3">
+                <small>Pending</small>
+                <h3>{{ pending_payments }}</h3>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm p-3">
+                <small>Verified</small>
+                <h3>{{ verified_payments }}</h3>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm p-3">
+                <small>Rejected</small>
+                <h3>{{ rejected_payments }}</h3>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- Payment Table -->
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-header bg-white py-3">
+            <h5 class="mb-0">Payment Records</h5>
+        </div>
+
+        <div class="card-body">
+
+            {% if payments %}
+
+                <div class="table-responsive">
+
+                    <table class="table table-hover align-middle">
+
+                        <thead>
+                            <tr>
+                                <th>Payment Number</th>
+                                <th>Bill Number</th>
+                                <th>Amount</th>
+                                <th>Method</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            {% for payment in payments %}
+
+                                <tr>
+
+                                    <td>
+                                        {{ payment.payment_number|default:"Pending number" }}
+                                    </td>
+
+                                    <td>
+                                        {{ payment.bill.bill_number }}
+                                    </td>
+
+                                    <td>
+                                        ₹{{ payment.amount|floatformat:2 }}
+                                    </td>
+
+                                    <td>
+                                        {{ payment.get_payment_method_display }}
+                                    </td>
+
+                                    <td>
+                                        {{ payment.payment_date|date:"d M Y" }}
+                                    </td>
+
+                                    <td>
+
+                                        {% if payment.status == 'VERIFIED' %}
+
+                                            <span class="badge bg-success">
+                                                Verified
+                                            </span>
+
+                                        {% elif payment.status == 'REJECTED' %}
+
+                                            <span class="badge bg-danger">
+                                                Rejected
+                                            </span>
+
+                                        {% else %}
+
+                                            <span class="badge bg-warning text-dark">
+                                                Pending
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+                                    <td>
+
+                                        {% if payment.status == 'VERIFIED' %}
+
+                                            <a href="{% url 'payment_receipt' payment.id %}"
+                                               class="btn btn-outline-success btn-sm">
+                                                Receipt
+                                            </a>
+
+                                        {% elif payment.status == 'REJECTED' %}
+
+                                            <span class="text-danger small">
+                                                {{ payment.staff_remarks }}
+                                            </span>
+
+                                        {% else %}
+
+                                            <span class="text-muted small">
+                                                Awaiting verification
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            {% else %}
+
+                <div class="text-center py-5">
+
+                    <div class="display-5 mb-3">💳</div>
+
+                    <h5>No Payment Records</h5>
+
+                    <p class="text-muted">
+                        Your submitted payment records will appear here.
+                    </p>
+
+                    <a href="{% url 'my_bills' %}"
+                       class="btn btn-primary">
+                        View My Bills
+                    </a>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

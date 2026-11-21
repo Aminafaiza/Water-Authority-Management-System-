@@ -1,0 +1,211 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-4">
+
+    <div class="mb-4">
+        <h2 class="fw-bold">My Work Assignments</h2>
+        <p class="text-muted">
+            View your assigned tasks, deadlines and update your work progress.
+        </p>
+    </div>
+
+    <!-- Statistics -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <p class="text-muted mb-1">Total Tasks</p>
+                    <h3 class="fw-bold">{{ total_assignments }}</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <p class="text-muted mb-1">Pending</p>
+                    <h3 class="fw-bold text-warning">{{ pending_assignments }}</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <p class="text-muted mb-1">In Progress</p>
+                    <h3 class="fw-bold text-primary">{{ in_progress_assignments }}</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <p class="text-muted mb-1">Completed</p>
+                    <h3 class="fw-bold text-success">{{ completed_assignments }}</h3>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Search and Filter -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+
+            <form method="GET" class="row g-3">
+
+                <div class="col-md-6">
+                    <input type="text"
+                           name="q"
+                           class="form-control"
+                           placeholder="Search task..."
+                           value="{{ search_query }}">
+                </div>
+
+                <div class="col-md-4">
+                    <select name="status" class="form-select">
+                        <option value="">All Statuses</option>
+
+                        {% for value, label in status_choices %}
+                            <option value="{{ value }}"
+                                {% if status_filter == value %}selected{% endif %}>
+                                {{ label }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">
+                        Filter
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+    <!-- Assignment List -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+
+            <h5 class="fw-bold mb-3">Assigned Tasks</h5>
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle">
+
+                    <thead class="table-light">
+                        <tr>
+                            <th>Task</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                            <th>Deadline</th>
+                            <th>Assigned By</th>
+                            <th>Remarks</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for assignment in assignments %}
+
+                            <tr>
+
+                                <td>
+                                    <strong>{{ assignment.title }}</strong>
+                                    <br>
+                                    <small class="text-muted">
+                                        {{ assignment.description|truncatewords:15 }}
+                                    </small>
+                                </td>
+
+                                <td>
+                                    {% if assignment.priority == 'URGENT' %}
+                                        <span class="badge bg-danger">
+                                            {{ assignment.get_priority_display }}
+                                        </span>
+                                    {% elif assignment.priority == 'HIGH' %}
+                                        <span class="badge bg-warning text-dark">
+                                            {{ assignment.get_priority_display }}
+                                        </span>
+                                    {% elif assignment.priority == 'MEDIUM' %}
+                                        <span class="badge bg-primary">
+                                            {{ assignment.get_priority_display }}
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">
+                                            {{ assignment.get_priority_display }}
+                                        </span>
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    {{ assignment.get_status_display }}
+                                </td>
+
+                                <td>
+                                    {{ assignment.deadline|date:"d M Y" }}
+                                </td>
+
+                                <td>
+                                    {{ assignment.assigned_by.username }}
+                                </td>
+
+                                <td>
+                                    {% if assignment.staff_remarks %}
+                                        {{ assignment.staff_remarks|truncatewords:8 }}
+                                    {% else %}
+                                        <span class="text-muted">No remarks</span>
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    {% if assignment.status != 'CANCELLED' and assignment.status != 'COMPLETED' %}
+                                        <a href="{% url 'update_my_assignment' assignment.id %}"
+                                           class="btn btn-sm btn-outline-primary">
+                                            Update
+                                        </a>
+                                    {% else %}
+                                        <span class="text-muted">No action</span>
+                                    {% endif %}
+                                </td>
+
+                            </tr>
+
+                        {% empty %}
+
+                            <tr>
+                                <td colspan="7" class="text-center py-4">
+                                    <h6>No assignments yet</h6>
+                                    <p class="text-muted mb-0">
+                                        Your manager hasn't assigned any tasks to you.
+                                    </p>
+                                </td>
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a href="{% url 'staff_dashboard' %}"
+           class="btn btn-outline-secondary">
+            Back to Dashboard
+        </a>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,243 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Staff Management | AquaCare{% endblock %}
+
+{% block content %}
+
+<div class="staff-management">
+
+    <!-- Page Heading -->
+    <div class="staff-page-heading">
+
+        <div>
+            <span class="staff-page-label">
+                DEPARTMENT MANAGEMENT
+            </span>
+
+            <h1>Staff Management</h1>
+
+            <p>
+                Create, search and manage Water Authority Staff accounts.
+            </p>
+        </div>
+
+        <a href="{% url 'staff_create' %}"
+           class="btn btn-primary">
+            <i class="bi bi-person-plus"></i>
+            Add New Staff
+        </a>
+
+    </div>
+
+
+    <!-- Statistics -->
+    <div class="row g-4 mb-4">
+
+        <div class="col-md-4">
+            <div class="staff-management-stat">
+                <span>Total Staff</span>
+                <h3>{{ total_staff }}</h3>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="staff-management-stat">
+                <span>Active Staff</span>
+                <h3>{{ active_staff }}</h3>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="staff-management-stat">
+                <span>Inactive Staff</span>
+                <h3>{{ inactive_staff }}</h3>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- Staff List -->
+    <div class="staff-table-card">
+
+        <div class="staff-table-heading">
+
+            <div>
+                <h2>Staff Directory</h2>
+                <p>Registered Water Authority employees</p>
+            </div>
+
+        </div>
+
+
+        <!-- Search -->
+        <form method="GET"
+              action="{% url 'staff_list' %}"
+              class="staff-search-form">
+
+            <div class="input-group">
+
+                <input
+                    type="text"
+                    name="q"
+                    class="form-control"
+                    placeholder="Search username, name or email..."
+                    value="{{ search_query }}"
+                >
+
+                <button class="btn btn-primary" type="submit">
+                    <i class="bi bi-search"></i>
+                    Search
+                </button>
+
+            </div>
+
+            {% if search_query %}
+                <a href="{% url 'staff_list' %}"
+                   class="staff-clear-search">
+                    Clear search
+                </a>
+            {% endif %}
+
+        </form>
+
+
+        <!-- Table -->
+        <div class="table-responsive">
+
+            <table class="table staff-table">
+
+                <thead>
+                    <tr>
+                        <th>Staff Member</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Status</th>
+                        <th>Joined</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for staff in staff_members %}
+
+                        <tr>
+
+                            <td>
+                                <strong>
+                                    {{ staff.get_full_name|default:staff.username }}
+                                </strong>
+                            </td>
+
+                            <td>{{ staff.username }}</td>
+
+                            <td>
+                                {{ staff.email|default:"Not provided" }}
+                            </td>
+
+                            <td>
+                                {{ staff.phone_number|default:"Not provided" }}
+                            </td>
+
+                            <td>
+                                {% if staff.is_active %}
+                                    <span class="staff-status active">
+                                        Active
+                                    </span>
+                                {% else %}
+                                    <span class="staff-status inactive">
+                                        Inactive
+                                    </span>
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                {{ staff.date_joined|date:"d M Y" }}
+                            </td>
+
+                            <td>
+                                <div class="staff-table-actions">
+
+                                    <a
+                                        href="{% url 'staff_update' staff.id %}"
+                                        class="btn btn-sm btn-outline-primary"
+                                        title="Edit Staff"
+                                    >
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+
+                                    <form
+                                        method="POST"
+                                        action="{% url 'staff_toggle_status' staff.id %}"
+                                    >
+                                        {% csrf_token %}
+
+                                        {% if staff.is_active %}
+                                            <button
+                                                type="submit"
+                                                class="btn btn-sm btn-outline-danger"
+                                                title="Deactivate Staff"
+                                                onclick="return confirm('Deactivate this Staff account?');"
+                                            >
+                                                <i class="bi bi-person-x"></i>
+                                            </button>
+                                        {% else %}
+                                            <button
+                                                type="submit"
+                                                class="btn btn-sm btn-outline-success"
+                                                title="Activate Staff"
+                                            >
+                                                <i class="bi bi-person-check"></i>
+                                            </button>
+                                        {% endif %}
+
+                                    </form>
+
+                                </div>
+                            </td>
+
+                        </tr>
+
+                    {% empty %}
+
+                        <tr>
+                            <td colspan="7">
+
+                                <div class="staff-empty-state">
+
+                                    <i class="bi bi-people"></i>
+
+                                    {% if search_query %}
+                                        <h3>No matching Staff found</h3>
+                                        <p>Try another search term.</p>
+                                    {% else %}
+                                        <h3>No Staff accounts yet</h3>
+                                        <p>Create your first Staff account.</p>
+
+                                        <a href="{% url 'staff_create' %}"
+                                           class="btn btn-primary mt-2">
+                                            Add Staff
+                                        </a>
+                                    {% endif %}
+
+                                </div>
+
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

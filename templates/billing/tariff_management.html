@@ -1,0 +1,237 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Tariff Management | AquaCare{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+
+    <!-- Page Heading -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+
+        <div>
+            <h2>Dynamic Tariff Management</h2>
+            <p class="text-muted mb-0">
+                Configure water rates and fixed charges for each connection type.
+            </p>
+        </div>
+
+        <a href="{% url 'manager_dashboard' %}"
+           class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i>
+            Back to Dashboard
+        </a>
+
+    </div>
+
+
+    <div class="row g-4">
+
+        <!-- Tariff Form -->
+        <div class="col-lg-4">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0">
+                        {% if editing_tariff %}
+                            Update Tariff
+                        {% else %}
+                            Add New Tariff
+                        {% endif %}
+                    </h5>
+                </div>
+
+                <div class="card-body">
+
+                    <form method="POST">
+
+                        {% csrf_token %}
+
+                        {% if editing_tariff %}
+                            <input type="hidden"
+                                   name="tariff_id"
+                                   value="{{ editing_tariff.id }}">
+                        {% endif %}
+
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {{ form.non_field_errors }}
+                            </div>
+                        {% endif %}
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Connection Type
+                            </label>
+
+                            {{ form.connection_type }}
+
+                            {% for error in form.connection_type.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+
+                        </div>
+
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Rate Per Unit (₹)
+                            </label>
+
+                            {{ form.rate_per_unit }}
+
+                            {% for error in form.rate_per_unit.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+
+                        </div>
+
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Fixed Charge (₹)
+                            </label>
+
+                            {{ form.fixed_charge }}
+
+                            {% for error in form.fixed_charge.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+
+                        </div>
+
+
+                        <button type="submit"
+                                class="btn btn-primary w-100">
+
+                            {% if editing_tariff %}
+                                Update Tariff
+                            {% else %}
+                                Save Tariff
+                            {% endif %}
+
+                        </button>
+
+                        {% if editing_tariff %}
+                            <a href="{% url 'tariff_management' %}"
+                               class="btn btn-outline-secondary w-100 mt-2">
+                                Cancel Editing
+                            </a>
+                        {% endif %}
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- Existing Tariffs -->
+        <div class="col-lg-8">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0">Current Water Tariffs</h5>
+                </div>
+
+                <div class="card-body">
+
+                    {% if tariffs %}
+
+                        <div class="table-responsive">
+
+                            <table class="table table-hover align-middle">
+
+                                <thead>
+                                    <tr>
+                                        <th>Connection Type</th>
+                                        <th>Rate Per Unit</th>
+                                        <th>Fixed Charge</th>
+                                        <th>Last Updated</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+
+                                    {% for tariff in tariffs %}
+
+                                        <tr>
+
+                                            <td>
+                                                <strong>
+                                                    {{ tariff.get_connection_type_display }}
+                                                </strong>
+                                            </td>
+
+                                            <td>
+                                                ₹{{ tariff.rate_per_unit|floatformat:2 }}
+                                            </td>
+
+                                            <td>
+                                                ₹{{ tariff.fixed_charge|floatformat:2 }}
+                                            </td>
+
+                                            <td>
+                                                {{ tariff.updated_at|date:"d M Y, h:i A" }}
+                                            </td>
+
+                                            <td>
+                                                <a href="{% url 'tariff_management' %}?edit={{ tariff.id }}"
+                                                   class="btn btn-outline-primary btn-sm">
+                                                    <i class="bi bi-pencil"></i>
+                                                    Edit
+                                                </a>
+                                            </td>
+
+                                        </tr>
+
+                                    {% endfor %}
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    {% else %}
+
+                        <div class="text-center py-5">
+
+                            <i class="bi bi-receipt display-4 text-muted"></i>
+
+                            <h6 class="mt-3">
+                                No Tariffs Configured
+                            </h6>
+
+                            <p class="text-muted mb-0">
+                                Add the first water tariff using the form.
+                            </p>
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

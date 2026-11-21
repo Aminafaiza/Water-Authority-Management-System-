@@ -1,0 +1,162 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Record Meter Reading | AquaCare{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <div class="mb-4">
+        <h2>Record Meter Reading</h2>
+        <p class="text-muted">
+            Enter the latest meter value for this customer.
+        </p>
+    </div>
+
+    <div class="row g-4">
+
+        <div class="col-lg-5">
+
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+
+                    <h5 class="mb-3">Connection Information</h5>
+
+                    <p>
+                        <strong>Connection Number:</strong><br>
+                        {{ connection.connection_number }}
+                    </p>
+
+                    <p>
+                        <strong>Customer:</strong><br>
+                        {{ connection.applicant_name }}
+                    </p>
+
+                    <p>
+                        <strong>Contact Number:</strong><br>
+                        {{ connection.contact_number }}
+                    </p>
+
+                    <p>
+                        <strong>Connection Type:</strong><br>
+                        {{ connection.get_connection_type_display }}
+                    </p>
+
+                    <p>
+                        <strong>Property Address:</strong><br>
+                        {{ connection.property_address }}
+                    </p>
+
+                    <hr>
+
+                    <p class="mb-1">
+                        <strong>Previous Meter Reading</strong>
+                    </p>
+
+                    <h3 class="text-primary">
+                        {{ previous_reading }} units
+                    </h3>
+
+                    {% if latest_reading %}
+                        <small class="text-muted">
+                            Last recorded on {{ latest_reading.reading_date }}
+                        </small>
+                    {% else %}
+                        <small class="text-muted">
+                            This is the first recorded reading.
+                        </small>
+                    {% endif %}
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-lg-7">
+
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+
+                    <h5 class="mb-3">Enter New Reading</h5>
+
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {{ form.non_field_errors }}
+                            </div>
+                        {% endif %}
+
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Current Meter Reading
+                            </label>
+
+                            {{ form.current_reading }}
+
+                            {% for error in form.current_reading.errors %}
+                                <div class="text-danger small">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Reading Date
+                            </label>
+
+                            {{ form.reading_date }}
+
+                            {% for error in form.reading_date.errors %}
+                                <div class="text-danger small">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Remarks
+                            </label>
+
+                            {{ form.remarks }}
+
+                            {% for error in form.remarks.errors %}
+                                <div class="text-danger small">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="alert alert-info">
+                            <strong>Consumption formula:</strong><br>
+                            Current Reading − Previous Reading
+                            <br>
+                            <strong>Previous reading:</strong>
+                            {{ previous_reading }} units
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            Save Meter Reading
+                        </button>
+
+                        <a href="{% url 'staff_reading_list' %}"
+                           class="btn btn-outline-secondary">
+                            Cancel
+                        </a>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

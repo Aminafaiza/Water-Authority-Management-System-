@@ -1,0 +1,103 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5">
+
+    <div class="mb-4">
+        <h2>Review Connection Application</h2>
+        <p class="text-muted">
+            Application #{{ connection.id }}
+        </p>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+
+            <h5>Customer Information</h5>
+
+            <p><strong>Applicant:</strong> {{ connection.applicant_name }}</p>
+            <p><strong>Username:</strong> {{ connection.customer.username }}</p>
+            <p><strong>Email:</strong> {{ connection.customer.email }}</p>
+            <p><strong>Phone:</strong> {{ connection.contact_number }}</p>
+            <p><strong>Address:</strong> {{ connection.property_address }}</p>
+            <p>
+                <strong>Connection Type:</strong>
+                {{ connection.get_connection_type_display }}
+            </p>
+            <p><strong>Purpose:</strong> {{ connection.purpose }}</p>
+            <p>
+                <strong>Current Status:</strong>
+                {{ connection.get_status_display }}
+            </p>
+
+            <hr>
+
+            {% if connection.status == 'PENDING' %}
+
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label for="staff_remarks" class="form-label">
+                            Staff Remarks
+                        </label>
+
+                        <textarea
+                            name="staff_remarks"
+                            id="staff_remarks"
+                            class="form-control"
+                            rows="4"
+                            placeholder="Enter remarks or reason for rejection"></textarea>
+                    </div>
+
+                    <button
+                        type="submit"
+                        name="action"
+                        value="approve"
+                        class="btn btn-success">
+                        Approve Application
+                    </button>
+
+                    <button
+                        type="submit"
+                        name="action"
+                        value="reject"
+                        class="btn btn-danger">
+                        Reject Application
+                    </button>
+
+                </form>
+
+            {% else %}
+
+                <div class="alert alert-info">
+                    This application has already been reviewed.
+                </div>
+
+                {% if connection.connection_number %}
+                    <p>
+                        <strong>Connection Number:</strong>
+                        {{ connection.connection_number }}
+                    </p>
+                {% endif %}
+
+                {% if connection.staff_remarks %}
+                    <p>
+                        <strong>Staff Remarks:</strong>
+                        {{ connection.staff_remarks }}
+                    </p>
+                {% endif %}
+
+            {% endif %}
+
+            <a href="{% url 'staff_connection_list' %}"
+               class="btn btn-outline-secondary mt-3">
+                Back to Applications
+            </a>
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}

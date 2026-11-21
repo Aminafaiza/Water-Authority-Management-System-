@@ -1,0 +1,138 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5">
+
+    <div class="mb-4">
+        <h2>Water Connection Applications</h2>
+        <p class="text-muted">
+            Review customer applications and manage their status.
+        </p>
+    </div>
+
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <p class="text-muted mb-1">Pending</p>
+                    <h3>{{ pending_count }}</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <p class="text-muted mb-1">Approved</p>
+                    <h3>{{ approved_count }}</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <p class="text-muted mb-1">Rejected</p>
+                    <h3>{{ rejected_count }}</h3>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <form method="GET" class="mb-3">
+        <div class="row g-2">
+            <div class="col-md-4">
+                <select name="status" class="form-select">
+                    <option value="">All Applications</option>
+                    <option value="PENDING"
+                        {% if status_filter == 'PENDING' %}selected{% endif %}>
+                        Pending
+                    </option>
+                    <option value="APPROVED"
+                        {% if status_filter == 'APPROVED' %}selected{% endif %}>
+                        Approved
+                    </option>
+                    <option value="REJECTED"
+                        {% if status_filter == 'REJECTED' %}selected{% endif %}>
+                        Rejected
+                    </option>
+                </select>
+            </div>
+
+            <div class="col-auto">
+                <button class="btn btn-primary" type="submit">
+                    Filter
+                </button>
+                <a href="{% url 'staff_connection_list' %}"
+                   class="btn btn-outline-secondary">
+                    Clear
+                </a>
+            </div>
+        </div>
+    </form>
+
+    <div class="card border-0 shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+
+                <thead class="table-light">
+                    <tr>
+                        <th>Application</th>
+                        <th>Customer</th>
+                        <th>Connection Type</th>
+                        <th>Submitted</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for connection in connections %}
+                        <tr>
+                            <td>#{{ connection.id }}</td>
+
+                            <td>
+                                {{ connection.applicant_name }}
+                                <div class="small text-muted">
+                                    {{ connection.customer.username }}
+                                </div>
+                            </td>
+
+                            <td>
+                                {{ connection.get_connection_type_display }}
+                            </td>
+
+                            <td>
+                                {{ connection.submitted_at|date:"d M Y" }}
+                            </td>
+
+                            <td>
+                                {{ connection.get_status_display }}
+                            </td>
+
+                            <td>
+                                <a href="{% url 'review_connection' connection.id %}"
+                                   class="btn btn-sm btn-outline-primary">
+                                    Review
+                                </a>
+                            </td>
+                        </tr>
+
+                    {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center py-4">
+                                No connection applications found.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

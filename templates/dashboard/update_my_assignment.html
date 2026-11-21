@@ -1,0 +1,129 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5">
+
+    <div class="mb-4">
+        <a href="{% url 'my_assignments' %}"
+           class="btn btn-outline-secondary mb-3">
+            <i class="bi bi-arrow-left"></i> Back to My Assignments
+        </a>
+
+        <h2 class="fw-bold">Update Maintenance Task</h2>
+        <p class="text-muted">
+            Update the progress of your assigned maintenance work.
+        </p>
+    </div>
+
+    <!-- Task Details -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body p-4">
+
+            <h5 class="fw-bold">{{ assignment.title }}</h5>
+
+            <p class="text-muted">
+                {{ assignment.description }}
+            </p>
+
+            <div class="row g-3">
+
+                <div class="col-md-4">
+                    <strong>Priority:</strong>
+                    {{ assignment.get_priority_display }}
+                </div>
+
+                <div class="col-md-4">
+                    <strong>Deadline:</strong>
+                    {{ assignment.deadline|date:"d M Y" }}
+                </div>
+
+                <div class="col-md-4">
+                    <strong>Assigned By:</strong>
+                    {{ assignment.assigned_by.username }}
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Update Form -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+
+            <h5 class="fw-bold mb-4">Update Task Progress</h5>
+
+            <form method="POST">
+                {% csrf_token %}
+
+                {% if form.errors %}
+                    <div class="alert alert-danger">
+                        Please correct the errors below.
+                        {{ form.errors }}
+                    </div>
+                {% endif %}
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">
+                        Task Status
+                    </label>
+                    {{ form.status }}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">
+                        Work Remarks
+                    </label>
+                    {{ form.staff_remarks }}
+                    <small class="text-muted">
+                        Explain the work completed or the current progress.
+                    </small>
+                </div>
+
+                <div class="d-flex gap-2 flex-wrap">
+
+                    <button type="submit" class="btn btn-primary px-4">
+                        <i class="bi bi-save"></i> Save Progress
+                    </button>
+
+                    <a href="{% url 'my_assignments' %}"
+                       class="btn btn-outline-secondary">
+                        Cancel
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+<style>
+    form input,
+    form select,
+    form textarea {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #ced4da;
+        border-radius: 8px;
+        margin-top: 5px;
+    }
+
+    form textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    form input:focus,
+    form select:focus,
+    form textarea:focus {
+        border-color: #0d6efd;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
+    }
+</style>
+
+{% endblock %}

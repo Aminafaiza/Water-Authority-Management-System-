@@ -1,0 +1,247 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Billing Management | AquaCare{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+
+    <div class="mb-4">
+        <h2>Billing Management</h2>
+        <p class="text-muted">
+            Generate and manage customer water bills.
+        </p>
+    </div>
+
+    <!-- Statistics -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 p-3">
+                <small>Total Bills</small>
+                <h3>{{ total_bills }}</h3>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 p-3">
+                <small>Pending Bills</small>
+                <h3>{{ pending_bills }}</h3>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 p-3">
+                <small>Paid Bills</small>
+                <h3>{{ paid_bills }}</h3>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 p-3">
+                <small>Overdue Bills</small>
+                <h3>{{ overdue_bills }}</h3>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- Unbilled Meter Readings -->
+    <div class="card shadow-sm border-0 mb-4">
+
+        <div class="card-header bg-white py-3">
+            <h5 class="mb-0">Meter Readings Awaiting Billing</h5>
+        </div>
+
+        <div class="card-body">
+
+            {% if unbilled_readings %}
+
+                <div class="table-responsive">
+
+                    <table class="table table-hover align-middle">
+
+                        <thead>
+                            <tr>
+                                <th>Connection</th>
+                                <th>Customer</th>
+                                <th>Reading Date</th>
+                                <th>Consumption</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            {% for reading in unbilled_readings %}
+
+                                <tr>
+
+                                    <td>
+                                        {{ reading.connection.connection_number }}
+                                    </td>
+
+                                    <td>
+                                        {{ reading.connection.customer.username }}
+                                    </td>
+
+                                    <td>
+                                        {{ reading.reading_date|date:"d M Y" }}
+                                    </td>
+
+                                    <td>
+                                        {{ reading.consumption }} KL
+                                    </td>
+
+                                    <td>
+
+                                        <form method="POST"
+                                              action="{% url 'generate_bill' reading.id %}">
+
+                                            {% csrf_token %}
+
+                                            <button type="submit"
+                                                    class="btn btn-primary btn-sm">
+
+                                                Generate Bill
+
+                                            </button>
+
+                                        </form>
+
+                                    </td>
+
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            {% else %}
+
+                <div class="text-center py-4">
+
+                    <h6>No readings awaiting billing</h6>
+
+                    <p class="text-muted mb-0">
+                        All recorded meter readings have been billed.
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+    </div>
+
+
+    <!-- Generated Bills -->
+    <div class="card shadow-sm border-0">
+
+        <div class="card-header bg-white py-3">
+            <h5 class="mb-0">Generated Bills</h5>
+        </div>
+
+        <div class="card-body">
+
+            {% if bills %}
+
+                <div class="table-responsive">
+
+                    <table class="table table-hover align-middle">
+
+                        <thead>
+                            <tr>
+                                <th>Bill Number</th>
+                                <th>Customer</th>
+                                <th>Connection</th>
+                                <th>Amount</th>
+                                <th>Due Date</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            {% for bill in bills %}
+
+                                <tr>
+
+                                    <td>
+                                        {{ bill.bill_number }}
+                                    </td>
+
+                                    <td>
+                                        {{ bill.connection.customer.username }}
+                                    </td>
+
+                                    <td>
+                                        {{ bill.connection.connection_number }}
+                                    </td>
+
+                                    <td>
+                                        ₹{{ bill.total_amount|floatformat:2 }}
+                                    </td>
+
+                                    <td>
+                                        {{ bill.due_date|date:"d M Y" }}
+                                    </td>
+
+                                    <td>
+
+                                        {% if bill.status == 'PAID' %}
+                                            <span class="badge bg-success">
+                                                Paid
+                                            </span>
+
+                                        {% elif bill.status == 'OVERDUE' %}
+                                            <span class="badge bg-danger">
+                                                Overdue
+                                            </span>
+
+                                        {% else %}
+                                            <span class="badge bg-warning text-dark">
+                                                Pending
+                                            </span>
+                                        {% endif %}
+
+                                    </td>
+
+                                    <td>
+                                        <a href="{% url 'bill_detail' bill.id %}"
+                                           class="btn btn-outline-primary btn-sm">
+                                            View
+                                        </a>
+                                    </td>
+
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            {% else %}
+
+                <p class="text-muted text-center py-4">
+                    No bills generated yet.
+                </p>
+
+            {% endif %}
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

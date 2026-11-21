@@ -1,0 +1,565 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Manager Dashboard | AquaCare{% endblock %}
+
+{% block content %}
+
+<div class="manager-dashboard">
+
+    <!-- Welcome Section -->
+    <section class="manager-welcome">
+        <div>
+            <span class="manager-label">
+                DEPARTMENT MANAGEMENT
+            </span>
+
+            <h1>
+                Welcome, {{ manager_name }}!
+            </h1>
+
+            <p>
+                Monitor department operations, supervise staff,
+                and manage water authority services from one place.
+            </p>
+        </div>
+
+        <div class="manager-welcome-icon">
+            <i class="bi bi-buildings"></i>
+        </div>
+    </section>
+
+
+    <!-- Department Statistics -->
+    <section class="manager-section">
+
+        <div class="manager-section-heading">
+            <div>
+                <h2>Department Overview</h2>
+                <p>Summary of overall department activities</p>
+            </div>
+        </div>
+
+        <div class="row g-4">
+
+            <!-- Total Customers -->
+            <div class="col-md-6 col-xl-3">
+                <div class="manager-stat-card">
+
+                    <div class="manager-stat-icon customer-icon">
+                        <i class="bi bi-people"></i>
+                    </div>
+
+                    <h3>
+                        {% if total_customers is not None %}
+                            {{ total_customers }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </h3>
+
+                    <p>Total Customers</p>
+                    <small>Registered customer accounts</small>
+
+                </div>
+            </div>
+
+
+            <!-- Total Staff -->
+            <div class="col-md-6 col-xl-3">
+                <div class="manager-stat-card">
+
+                    <div class="manager-stat-icon staff-icon">
+                        <i class="bi bi-person-badge"></i>
+                    </div>
+
+                    <h3>
+                        {% if total_staff is not None %}
+                            {{ total_staff }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </h3>
+
+                    <p>Total Staff</p>
+                    <small>Department staff accounts</small>
+
+                </div>
+            </div>
+
+
+            <!-- Pending Applications -->
+            <div class="col-md-6 col-xl-3">
+                <div class="manager-stat-card">
+
+                    <div class="manager-stat-icon application-icon">
+                        <i class="bi bi-file-earmark-text"></i>
+                    </div>
+
+                    <h3>
+                        {% if pending_applications is not None %}
+                            {{ pending_applications }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </h3>
+
+                    <p>Pending Applications</p>
+                    <small>Applications awaiting review</small>
+
+                </div>
+            </div>
+
+
+            <!-- Open Complaints -->
+            <div class="col-md-6 col-xl-3">
+                <div class="manager-stat-card">
+
+                    <div class="manager-stat-icon complaint-icon">
+                        <i class="bi bi-exclamation-circle"></i>
+                    </div>
+
+                    <h3>
+                        {% if open_complaints is not None %}
+                            {{ open_complaints }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </h3>
+
+                    <p>Open Complaints</p>
+                    <small>Complaints awaiting resolution</small>
+
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+
+    
+<!-- Management Operations -->
+<section class="manager-section">
+
+    <div class="manager-section-heading">
+        <div>
+            <h2>Management Operations</h2>
+            <p>Important department management activities</p>
+        </div>
+    </div>
+
+    <div class="row g-4">
+
+        <!-- Staff Management -->
+        <div class="col-md-6 col-xl-3">
+            <div class="manager-action-card">
+                <div class="manager-action-icon">
+                    <i class="bi bi-person-gear"></i>
+                </div>
+
+                <h3>Staff Management</h3>
+
+                <p>
+                    Create Staff accounts, update employee details
+                    and manage Staff account status.
+                </p>
+
+                <a href="{% url 'staff_list' %}"
+                   class="btn btn-outline-primary btn-sm">
+                    Manage Staff
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Complaint Management -->
+        <div class="col-md-6 col-xl-3">
+            <div class="manager-action-card">
+                <div class="manager-action-icon">
+                    <i class="bi bi-chat-left-text"></i>
+                </div>
+
+                <h3>Complaint Management</h3>
+
+                <p>
+                    Monitor customer complaints, assign staff,
+                    review progress, and track resolutions.
+                </p>
+
+                <a href="{% url 'staff_complaint_list' %}"
+                   class="btn btn-outline-primary btn-sm">
+                    Manage Complaints
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Application Monitoring -->
+        <div class="col-md-6 col-xl-3">
+            <div class="manager-action-card">
+                <div class="manager-action-icon">
+                    <i class="bi bi-clipboard-check"></i>
+                </div>
+
+                <h3>Application Monitoring</h3>
+
+                <p>
+                    Monitor customer water connection applications,
+                    review pending requests, and track approval status.
+                </p>
+
+                <a href="{% url 'staff_connection_list' %}"
+                   class="btn btn-outline-primary btn-sm">
+                    View Applications
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Work Assignments -->
+        <div class="col-md-6 col-xl-3">
+            <div class="manager-action-card">
+                <div class="manager-action-icon">
+                    <i class="bi bi-diagram-3"></i>
+                </div>
+
+                <h3>Work Assignments</h3>
+
+                <p>
+                    Assign operational tasks to department staff,
+                    monitor assigned work, and track task completion.
+                </p>
+
+                <a href="{% url 'assignment_list' %}"
+                   class="btn btn-outline-primary btn-sm">
+                    Manage Assignments
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Tariff Management -->
+        <div class="col-md-6 col-xl-3">
+            <div class="manager-action-card">
+                <div class="manager-action-icon">
+                    <i class="bi bi-currency-rupee"></i>
+                </div>
+
+                <h3>Tariff Management</h3>
+
+                <p>
+                    Manage Domestic, Commercial and Industrial
+                    water rates and fixed billing charges.
+                </p>
+
+                <a href="{% url 'tariff_management' %}"
+                   class="btn btn-outline-primary btn-sm">
+                    Manage Tariffs
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+    <!-- Reports and Analytics -->
+    <!-- <section class="manager-section">
+
+        <div class="manager-section-heading">
+            <div>
+                <h2>Reports and Analytics</h2>
+                <p>Department performance and operational insights</p>
+            </div>
+        </div>
+
+        <div class="manager-report-card">
+
+            <div class="manager-report-icon">
+                <i class="bi bi-bar-chart-line"></i>
+            </div>
+
+            <div>
+                <h3>Department Performance Reports</h3>
+
+                <p>
+                    View customer growth, water consumption,
+                    billing performance, payment records,
+                    and complaint statistics.
+                </p>
+
+                <span class="manager-coming-soon">
+                    Analytics will be developed in a later phase
+                </span>
+            </div>
+
+        </div>
+    </section>
+ -->
+
+    <!-- Recent Department Activity -->
+    <section class="manager-section">
+
+        <div class="manager-section-heading">
+            <div>
+                <h2>Recent Department Activity</h2>
+                <p>Latest applications, complaints and staff accounts</p>
+            </div>
+        </div>
+
+        <div class="row g-4">
+
+            <!-- Recent Applications -->
+            <div class="col-lg-4">
+                <div class="manager-content-card">
+
+                    <h3>
+                        <i class="bi bi-file-earmark-text"></i>
+                        Recent Applications
+                    </h3>
+
+                    {% if recent_applications %}
+
+                        <div class="table-responsive">
+                            <table class="table">
+
+                                <thead>
+                                    <tr>
+                                        <th>Application</th>
+                                        <th>Customer</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    {% for application in recent_applications %}
+                                        <tr>
+                                            <td>
+                                                {{ application.id }}
+                                            </td>
+
+                                            <td>
+                                                {{ application.customer }}
+                                            </td>
+
+                                            <td>
+                                                {{ application.status }}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+
+                            </table>
+                        </div>
+
+                    {% else %}
+
+                        <div class="manager-empty-state">
+                            <i class="bi bi-inbox"></i>
+                            <p>No application records available yet.</p>
+                        </div>
+
+                    {% endif %}
+
+                </div>
+            </div>
+
+<!-- Recent Complaints -->
+<div class="col-lg-4">
+    <div class="manager-content-card">
+
+        <h3>
+            <i class="bi bi-chat-left-text"></i>
+            Recent Complaints
+        </h3>
+
+        {% if recent_complaints %}
+
+            {% for complaint in recent_complaints %}
+
+                <div class="manager-activity-item">
+
+                    <strong>
+                        {{ complaint.subject }}
+                    </strong>
+
+                    <p class="mb-1">
+                        {{ complaint.complaint_number }}
+                    </p>
+
+                    <span class="badge
+                        {% if complaint.status == 'OPEN' %}
+                            bg-danger
+                        {% elif complaint.status == 'IN_PROGRESS' %}
+                            bg-warning text-dark
+                        {% elif complaint.status == 'RESOLVED' %}
+                            bg-success
+                        {% else %}
+                            bg-secondary
+                        {% endif %}">
+                        {{ complaint.get_status_display }}
+                    </span>
+
+                    <p class="text-muted mt-2">
+                        {{ complaint.submitted_at|date:"d M Y" }}
+                    </p>
+
+                    <a href="{% url 'complaint_detail' complaint.id %}"
+                       class="btn btn-sm btn-outline-primary">
+                        View Complaint
+                    </a>
+
+                </div>
+
+            {% endfor %}
+
+            <a href="{% url 'staff_complaint_list' %}"
+               class="btn btn-primary btn-sm mt-3">
+                View All Complaints
+            </a>
+
+        {% else %}
+
+            <div class="manager-empty-state">
+                <i class="bi bi-chat-square"></i>
+                <p>No complaint records available yet.</p>
+            </div>
+
+            <a href="{% url 'staff_complaint_list' %}"
+               class="btn btn-outline-primary btn-sm">
+                Manage Complaints
+            </a>
+
+        {% endif %}
+
+    </div>
+</div>
+            
+
+            <!-- Recent Staff -->
+            <div class="col-lg-4">
+                <div class="manager-content-card">
+
+                    <h3>
+                        <i class="bi bi-people"></i>
+                        Recent Staff
+                    </h3>
+
+                    {% if recent_staff %}
+
+                        {% for staff in recent_staff %}
+
+                            <div class="manager-activity-item">
+
+                                <strong>
+                                    {{ staff.get_full_name|default:staff.username }}
+                                </strong>
+
+                                <p>
+                                    {{ staff.email|default:"Email not provided" }}
+                                </p>
+
+                                {% if staff.is_active %}
+                                    <span class="staff-status active">
+                                        Active
+                                    </span>
+                                {% else %}
+                                    <span class="staff-status inactive">
+                                        Inactive
+                                    </span>
+                                {% endif %}
+
+                            </div>
+
+                        {% endfor %}
+
+                        <a href="{% url 'staff_list' %}"
+                           class="btn btn-sm btn-outline-primary mt-3">
+                            View All Staff
+                        </a>
+
+                    {% else %}
+
+                        <div class="manager-empty-state">
+                            <i class="bi bi-people"></i>
+                            <p>No Staff accounts available yet.</p>
+                        </div>
+
+                        <a href="{% url 'staff_create' %}"
+                           class="btn btn-sm btn-primary">
+                            Add Staff
+                        </a>
+
+                    {% endif %}
+
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- Manager Account Information -->
+    <section class="manager-section">
+
+        <div class="manager-content-card">
+
+            <h3>
+                <i class="bi bi-person-circle"></i>
+                Manager Account Information
+            </h3>
+
+            <div class="row g-3">
+
+                <div class="col-md-6">
+                    <span class="manager-info-label">
+                        Username
+                    </span>
+                    <p>{{ user.username }}</p>
+                </div>
+
+                <div class="col-md-6">
+                    <span class="manager-info-label">
+                        Full Name
+                    </span>
+                    <p>
+                        {{ user.get_full_name|default:"Not provided" }}
+                    </p>
+                </div>
+
+                <div class="col-md-6">
+                    <span class="manager-info-label">
+                        Email
+                    </span>
+                    <p>
+                        {{ user.email|default:"Not provided" }}
+                    </p>
+                </div>
+
+                <div class="col-md-6">
+                    <span class="manager-info-label">
+                        Phone Number
+                    </span>
+                    <p>
+                        {{ user.phone_number|default:"Not provided" }}
+                    </p>
+                </div>
+
+                <div class="col-md-6">
+                    <span class="manager-info-label">
+                        Department Role
+                    </span>
+                    <p>Department Manager</p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}
+
+

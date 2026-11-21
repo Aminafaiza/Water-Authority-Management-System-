@@ -1,0 +1,91 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Meter Reading Management | AquaCare{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+        <div>
+            <h2>Meter Reading Management</h2>
+            <p class="text-muted">
+                Select an approved water connection to record its meter reading.
+            </p>
+        </div>
+
+        <a href="{% url 'staff_dashboard' %}" class="btn btn-outline-secondary">
+            Back to Dashboard
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+
+            {% if connections %}
+
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+
+                        <thead>
+                            <tr>
+                                <th>Connection Number</th>
+                                <th>Customer</th>
+                                <th>Connection Type</th>
+                                <th>Address</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for connection in connections %}
+                                <tr>
+                                    <td>
+                                        <strong>
+                                            {{ connection.connection_number }}
+                                        </strong>
+                                    </td>
+
+                                    <td>
+                                        {{ connection.applicant_name }}
+                                    </td>
+
+                                    <td>
+                                        {{ connection.get_connection_type_display }}
+                                    </td>
+
+                                    <td>
+                                        {{ connection.property_address|truncatewords:8 }}
+                                    </td>
+
+                                    <td>
+                                        <a href="{% url 'record_reading' connection.id %}"
+                                           class="btn btn-primary btn-sm">
+                                            Record Reading
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+
+                    </table>
+                </div>
+
+            {% else %}
+
+                <div class="text-center py-5">
+                    <h5>No approved connections found</h5>
+                    <p class="text-muted">
+                        Approved customer connections will appear here.
+                    </p>
+                </div>
+
+            {% endif %}
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

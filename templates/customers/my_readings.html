@@ -1,0 +1,97 @@
+
+{% extends 'base.html' %}
+
+{% block title %}My Meter Readings | AquaCare{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+        <div>
+            <h2>My Meter Readings</h2>
+            <p class="text-muted">
+                View your water consumption and reading history.
+            </p>
+        </div>
+
+        <a href="{% url 'customer_dashboard' %}"
+           class="btn btn-outline-secondary">
+            Back to Dashboard
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+
+            {% if readings %}
+
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+
+                        <thead>
+                            <tr>
+                                <th>Connection Number</th>
+                                <th>Reading Date</th>
+                                <th>Previous</th>
+                                <th>Current</th>
+                                <th>Consumption</th>
+                                <th>Remarks</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for reading in readings %}
+                                <tr>
+
+                                    <td>
+                                        {{ reading.connection.connection_number }}
+                                    </td>
+
+                                    <td>
+                                        {{ reading.reading_date|date:"d M Y" }}
+                                    </td>
+
+                                    <td>
+                                        {{ reading.previous_reading }}
+                                    </td>
+
+                                    <td>
+                                        {{ reading.current_reading }}
+                                    </td>
+
+                                    <td>
+                                        <strong class="text-success">
+                                            {{ reading.consumption }} units
+                                        </strong>
+                                    </td>
+
+                                    <td>
+                                        {{ reading.remarks|default:"—" }}
+                                    </td>
+
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+
+                    </table>
+                </div>
+
+            {% else %}
+
+                <div class="text-center py-5">
+                    <h5>No meter readings available</h5>
+                    <p class="text-muted">
+                        Your meter reading history will appear here
+                        once staff records your readings.
+                    </p>
+                </div>
+
+            {% endif %}
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

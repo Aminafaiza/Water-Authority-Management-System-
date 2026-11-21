@@ -1,0 +1,445 @@
+
+{% extends 'base.html' %}
+
+{% block title %}
+Staff Dashboard | AquaCare
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid staff-dashboard">
+
+    <!-- Welcome Section -->
+    <div class="staff-welcome mb-4">
+        <div>
+            <span class="staff-label">
+                STAFF OPERATIONS PORTAL
+            </span>
+
+            <h2>
+                Welcome, {{ staff_name }}!
+            </h2>
+
+            <p>
+                Manage customer services and daily
+                water authority operations.
+            </p>
+        </div>
+
+        <div class="staff-welcome-icon">
+            🏢
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row g-4 mb-4">
+
+        <div class="col-md-6 col-xl-3">
+            <div class="staff-stat-card">
+                <div class="staff-stat-icon blue">🚰</div>
+
+                <div>
+                    <p>New Applications</p>
+                    <h3>
+                        {% if new_applications != None %}
+                            {{ new_applications }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </h3>
+                    <small>Awaiting application review</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+            <div class="staff-stat-card">
+                <div class="staff-stat-icon green">📊</div>
+
+                <div>
+                    <p>Pending Readings</p>
+                    <h3>
+                        {% if pending_readings != None %}
+                            {{ pending_readings }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </h3>
+                    <small>Meter readings to process</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+            <div class="staff-stat-card">
+                <div class="staff-stat-icon orange">🧾</div>
+
+                <div>
+                    <p>Pending Bills</p>
+                    <h3>
+                        {% if pending_bills != None %}
+                            {{ pending_bills }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </h3>
+                    <small>Bills requiring action</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+            <div class="staff-stat-card">
+                <div class="staff-stat-icon purple">🛠️</div>
+
+                <div>
+                    <p>Open Complaints</p>
+                    <h3>
+                        {% if open_complaints != None %}
+                            {{ open_complaints }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </h3>
+                    <small>Complaints not yet resolved</small>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Operational Activities -->
+    <div class="staff-section mb-4">
+
+        <div class="staff-section-heading">
+            <div>
+                <h4>Operational Activities</h4>
+                <p>Access your daily work activities.</p>
+            </div>
+            <span>⚙️</span>
+        </div>
+
+        <div class="row g-3">
+
+            <!-- Connection Applications -->
+            <div class="col-md-6 col-lg-4">
+                <div class="staff-action-card">
+
+                    <div class="staff-action-icon">🚰</div>
+
+                    <h5>Connection Applications</h5>
+
+                    <p>
+                        Review new water connection applications
+                        submitted by customers.
+                    </p>
+
+                    <a href="{% url 'staff_connection_list' %}"
+                       class="btn btn-primary btn-sm">
+                        View Applications
+                    </a>
+
+                </div>
+            </div>
+
+            <!-- Meter Readings -->
+            <div class="col-md-6 col-lg-4">
+                <div class="staff-action-card">
+
+                    <div class="staff-action-icon">📊</div>
+
+                    <h5>Meter Readings</h5>
+
+                    <p>
+                        Enter and review customer water meter readings.
+                    </p>
+
+                    <a href="{% url 'staff_reading_list' %}"
+   class="btn btn-primary btn-sm">
+    Manage Meter Readings
+</a>
+
+                </div>
+            </div>
+
+            <!-- Billing -->
+            <div class="col-md-6 col-lg-4">
+                <div class="staff-action-card">
+
+                    <div class="staff-action-icon">🧾</div>
+
+                    <h5>Billing Management</h5>
+
+                    <p>
+                        Generate and review customer water bills.
+                    </p>
+
+                    <!-- <span class="staff-coming-soon">
+                        Coming in Phase 12
+                    </span> -->
+
+<a href="{% url 'staff_bill_list' %}"
+   class="btn btn-primary btn-sm">
+    Manage Billing
+</a>
+
+                </div>
+            </div>
+
+            <!-- Payment Verification -->
+            <div class="col-md-6 col-lg-4">
+                <div class="staff-action-card">
+
+                    <div class="staff-action-icon">💳</div>
+
+                    <h5>Payment Verification</h5>
+
+                    <p>
+                        Review payment records and verify payment status.
+                    </p>
+
+                    <!-- <span class="staff-coming-soon">
+                        Coming in Phase 13
+                    </span> -->
+
+<a href="{% url 'staff_payment_list' %}"
+   class="btn btn-primary btn-sm">
+    Manage Payments
+</a>
+
+                </div>
+            </div>
+
+            <!-- Complaint Management -->
+<div class="col-md-6 col-lg-4">
+    <div class="staff-action-card">
+
+        <div class="staff-action-icon">🛠️</div>
+
+        <h5>Complaint Management</h5>
+
+        <p>
+            Review customer complaints, assign staff,
+            and update their status.
+        </p>
+
+        <a href="{% url 'staff_complaint_list' %}"
+           class="btn btn-primary btn-sm">
+            Manage Complaints
+        </a>
+
+    </div>
+</div>
+
+           
+<!-- Maintenance Tasks -->
+<div class="col-md-6 col-lg-4">
+    <!-- <div class="card shadow-sm border-0 h-100"> -->
+        <div class="staff-action-card">
+ <div class="staff-action-icon">🔧</div>
+
+        <!-- <div class="card-body p-4">
+
+            <div class="mb-3">
+                <span style="font-size: 2.5rem;">🔧</span>
+            </div> -->
+
+            <h5 class="fw-bold">Maintenance Tasks</h5>
+
+            <p class="text-muted">
+                View assigned maintenance work and update progress.
+            </p>
+
+            <a href="{% url 'my_assignments' %}"
+               class="btn btn-primary">
+                View Maintenance Tasks
+            </a>
+
+        </div>
+    </div>
+</div>
+
+
+    <!-- Recent Applications and Complaints -->
+    <div class="row g-4">
+
+        <!-- Recent Applications -->
+        <div class="col-lg-6">
+            <div class="staff-section h-100">
+
+                <div class="staff-section-heading">
+                    <div>
+                        <h4>Recent Applications</h4>
+                        <p>Latest customer connection requests.</p>
+                    </div>
+                    <span>🚰</span>
+                </div>
+
+                {% if recent_applications %}
+
+                    <div class="table-responsive">
+                        <table class="table align-middle">
+
+                            <thead>
+                                <tr>
+                                    <th>Application</th>
+                                    <th>Customer</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% for application in recent_applications %}
+                                    <tr>
+
+                                        <td>
+                                            {{ application.connection_number|default:"Pending number" }}
+                                        </td>
+
+                                        <td>
+                                            {{ application.applicant_name }}
+                                        </td>
+
+                                        <td>
+                                            <span>
+                                                {{ application.get_status_display }}
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            {% if application.status == 'PENDING' %}
+                                                <a href="{% url 'review_connection' application.id %}"
+                                                   class="btn btn-sm btn-outline-primary">
+                                                    Review
+                                                </a>
+                                            {% else %}
+                                                <span class="text-muted">Reviewed</span>
+                                            {% endif %}
+                                        </td>
+
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+
+                        </table>
+                    </div>
+
+                {% else %}
+
+                    <div class="staff-empty-state">
+                        <div>📄</div>
+                        <h6>No applications available</h6>
+                        <p>
+                            New customer applications will appear here.
+                        </p>
+                        <a href="{% url 'staff_connection_list' %}"
+                           class="btn btn-outline-primary btn-sm">
+                            View All Applications
+                        </a>
+                    </div>
+
+                {% endif %}
+
+            </div>
+        </div>
+
+       
+    </div>
+
+    <!-- Staff Account Information -->
+    <div class="staff-section mt-4">
+
+        <div class="staff-section-heading">
+            <div>
+                <h4>Staff Account Information</h4>
+                <p>Your registered account details.</p>
+            </div>
+            <span>👤</span>
+        </div>
+
+        <div class="row g-3">
+
+            <div class="col-md-4">
+                <small>Staff Username</small>
+                <h6>{{ user.username }}</h6>
+            </div>
+
+            <div class="col-md-4">
+                <small>Full Name</small>
+                <h6>
+                    {{ user.get_full_name|default:user.username }}
+                </h6>
+            </div>
+
+            <div class="col-md-4">
+                <small>Email Address</small>
+                <h6>
+                    {{ user.email|default:"Not provided" }}
+                </h6>
+            </div>
+
+            <div class="col-md-4">
+                <small>Phone Number</small>
+                <h6>
+                    {{ user.phone_number|default:"Not provided" }}
+                </h6>
+            </div>
+
+            <div class="col-md-4">
+                <small>Department Role</small>
+                <h6>Water Authority Staff</h6>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+<div class="col-md-4">
+    <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+
+            <h5>Complaint Management</h5>
+
+            <p class="text-muted">
+                Review and resolve customer complaints.
+            </p>
+
+            <a href="{% url 'staff_complaint_list' %}"
+               class="btn btn-primary btn-sm">
+                Manage Complaints
+            </a>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- My Work Assignments -->
+<div class="col-md-6 col-lg-4">
+    <div class="card shadow-sm border-0 h-100">
+        <div class="card-body p-4">
+
+            <div class="mb-3">
+                <i class="bi bi-clipboard-check fs-1 text-primary"></i>
+            </div>
+
+            <h5 class="fw-bold">My Work Assignments</h5>
+
+            <p class="text-muted">
+                View assigned tasks, deadlines and update your work progress.
+            </p>
+
+            <a href="{% url 'my_assignments' %}"
+               class="btn btn-primary">
+                View My Tasks
+            </a>
+
+        </div>
+    </div>
+</div>

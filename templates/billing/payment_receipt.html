@@ -1,0 +1,134 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Payment Receipt | AquaCare{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <div class="card border-0 shadow-sm mx-auto"
+         style="max-width: 800px;">
+
+        <div class="card-body p-4 p-md-5">
+
+            <div class="text-center mb-4">
+
+                <div class="display-4 text-success">
+                    <i class="bi bi-check-circle-fill"></i>
+                </div>
+
+                <h2 class="text-success mt-3">
+                    Payment Verified
+                </h2>
+
+                <p class="text-muted">
+                    Your payment has been successfully verified.
+                </p>
+
+            </div>
+
+            <hr>
+
+            <div class="text-center mb-4">
+
+                <small class="text-muted">
+                    PAYMENT RECEIPT
+                </small>
+
+                <h3 class="text-primary fw-bold">
+                    AQUACARE
+                </h3>
+
+                <p class="text-muted">
+                    Water Authority Management System
+                </p>
+
+            </div>
+
+
+            <div class="row g-3">
+
+                <div class="col-md-6">
+                    <small class="text-muted">Payment Number</small>
+                    <h6>{{ payment.payment_number }}</h6>
+                </div>
+
+                <div class="col-md-6">
+                    <small class="text-muted">Bill Number</small>
+                    <h6>{{ payment.bill.bill_number }}</h6>
+                </div>
+
+                <div class="col-md-6">
+                    <small class="text-muted">Customer</small>
+                    <h6>{{ payment.customer.username }}</h6>
+                </div>
+
+                <div class="col-md-6">
+                    <small class="text-muted">Connection Number</small>
+                    <h6>{{ payment.bill.connection.connection_number }}</h6>
+                </div>
+
+                <div class="col-md-6">
+                    <small class="text-muted">Payment Method</small>
+                    <h6>{{ payment.get_payment_method_display }}</h6>
+                </div>
+
+                <div class="col-md-6">
+                    <small class="text-muted">Transaction Reference</small>
+                    <h6>{{ payment.transaction_reference }}</h6>
+                </div>
+
+                <div class="col-md-6">
+                    <small class="text-muted">Payment Date</small>
+                    <h6>{{ payment.payment_date|date:"d M Y" }}</h6>
+                </div>
+
+                <div class="col-md-6">
+                    <small class="text-muted">Verified Date</small>
+                    <h6>{{ payment.verified_at|date:"d M Y, h:i A" }}</h6>
+                </div>
+
+            </div>
+
+            <hr>
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <h5 class="mb-0">Amount Paid</h5>
+
+                <h3 class="text-success mb-0">
+                    ₹{{ payment.amount|floatformat:2 }}
+                </h3>
+
+            </div>
+
+            <div class="text-center mt-5">
+
+                <button onclick="window.print()"
+                        class="btn btn-primary">
+                    <i class="bi bi-printer"></i>
+                    Print Receipt
+                </button>
+
+                <a href="{% url 'payment_history' %}"
+                   class="btn btn-outline-secondary">
+                    Back to Payment History
+                </a>
+
+            </div>
+
+            <p class="text-center text-muted mt-4 mb-0">
+                Thank you for using AquaCare water services.
+            </p>
+
+            <small class="d-block text-center text-muted mt-2">
+                This receipt confirms staff verification of the submitted payment record.
+            </small>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

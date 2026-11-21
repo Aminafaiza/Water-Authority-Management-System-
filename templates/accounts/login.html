@@ -1,0 +1,309 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AquaCare - Login</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 30px 15px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #e0f7fa, #f0f7f8);
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 460px;
+            padding: 35px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        .brand {
+            text-align: center;
+            color: #087e8b;
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #777;
+            margin-bottom: 25px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #222;
+            margin-bottom: 10px;
+        }
+
+        .role-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .role-option input {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .role-option label {
+            display: block;
+            padding: 15px 5px;
+            text-align: center;
+            border: 1px solid #d5e2e4;
+            border-radius: 9px;
+            cursor: pointer;
+            color: #444;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .role-option label:hover {
+            border-color: #087e8b;
+            background: #f0fbfc;
+        }
+
+        .role-option input:checked + label {
+            background: #e0f7fa;
+            border: 2px solid #087e8b;
+            color: #087e8b;
+            font-weight: bold;
+        }
+
+        .role-option input:focus-visible + label {
+            outline: 2px solid #087e8b;
+            outline-offset: 3px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 7px;
+            font-size: 15px;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #087e8b;
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 7px;
+            background: #087e8b;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .login-button:hover {
+            background: #05636d;
+        }
+
+        .message {
+            padding: 11px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            background: #fff0f0;
+            color: #b42318;
+            font-size: 14px;
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 22px;
+            color: #666;
+        }
+
+        .register-link a {
+            color: #087e8b;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+
+        .errorlist {
+            color: #c62828;
+            font-size: 13px;
+        }
+
+        @media (max-width: 380px) {
+            .login-container {
+                padding: 22px;
+            }
+
+            .role-options {
+                gap: 5px;
+            }
+
+            .role-option label {
+                font-size: 12px;
+                padding: 12px 3px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="login-container">
+
+    <div class="brand">AquaCare</div>
+
+    <p class="subtitle">
+        Water Authority Management System
+    </p>
+
+    <h2>Welcome Back!</h2>
+
+    <p class="subtitle">
+        Select your account type to continue
+    </p>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="message">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="role-options">
+
+            <div class="role-option">
+                <input
+                    type="radio"
+                    name="selected_role"
+                    id="customer"
+                    value="CUSTOMER"
+                    required
+                >
+                <label for="customer">Customer</label>
+            </div>
+
+            <div class="role-option">
+                <input
+                    type="radio"
+                    name="selected_role"
+                    id="staff"
+                    value="STAFF"
+                    required
+                >
+                <label for="staff">Staff</label>
+            </div>
+
+            <div class="role-option">
+                <input
+                    type="radio"
+                    name="selected_role"
+                    id="manager"
+                    value="MANAGER"
+                    required
+                >
+                <label for="manager">Manager</label>
+            </div>
+
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.username.id_for_label }}">
+                Username
+            </label>
+
+            {{ form.username }}
+            {{ form.username.errors }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.password.id_for_label }}">
+                Password
+            </label>
+
+            {{ form.password }}
+            {{ form.password.errors }}
+        </div>
+
+        <button type="submit" class="login-button">
+            Login
+        </button>
+
+    </form>
+
+    <!-- Only customers can register -->
+    <div class="register-link" id="customer-register-link">
+        New customer?
+        <a href="{% url 'register' %}">Register here</a>
+    </div>
+
+</div>
+
+<script>
+    const roleButtons = document.querySelectorAll(
+        'input[name="selected_role"]'
+    );
+
+    const registerLink = document.getElementById(
+        'customer-register-link'
+    );
+
+    function updateRegisterLink() {
+
+        const selectedRole = document.querySelector(
+            'input[name="selected_role"]:checked'
+        );
+
+        if (selectedRole && selectedRole.value === 'CUSTOMER') {
+            registerLink.style.display = 'block';
+        } else {
+            registerLink.style.display = 'none';
+        }
+    }
+
+    roleButtons.forEach(button => {
+        button.addEventListener('change', updateRegisterLink);
+    });
+
+    updateRegisterLink();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,212 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Payment Management | AquaCare{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+
+    <div class="mb-4">
+        <h2>Payment Management</h2>
+        <p class="text-muted">
+            Review customer payments and verify transactions.
+        </p>
+    </div>
+
+    <!-- Statistics -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm p-3">
+                <small>Total Payments</small>
+                <h3>{{ total_payments }}</h3>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm p-3">
+                <small>Pending Verification</small>
+                <h3>{{ pending_payments }}</h3>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm p-3">
+                <small>Verified Payments</small>
+                <h3>{{ verified_payments }}</h3>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm p-3">
+                <small>Rejected Payments</small>
+                <h3>{{ rejected_payments }}</h3>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- Payments Table -->
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-header bg-white py-3">
+            <h5 class="mb-0">Customer Payment Submissions</h5>
+        </div>
+
+        <div class="card-body">
+
+            {% if payments %}
+
+                <div class="table-responsive">
+
+                    <table class="table table-hover align-middle">
+
+                        <thead>
+                            <tr>
+                                <th>Payment Number</th>
+                                <th>Customer</th>
+                                <th>Bill Number</th>
+                                <th>Amount</th>
+                                <th>Method</th>
+                                <th>Transaction Reference</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            {% for payment in payments %}
+
+                                <tr>
+
+                                    <td>
+                                        {{ payment.payment_number|default:"Pending number" }}
+                                    </td>
+
+                                    <td>
+                                        {{ payment.customer.username }}
+                                    </td>
+
+                                    <td>
+                                        {{ payment.bill.bill_number }}
+                                    </td>
+
+                                    <td>
+                                        ₹{{ payment.amount|floatformat:2 }}
+                                    </td>
+
+                                    <td>
+                                        {{ payment.get_payment_method_display }}
+                                    </td>
+
+                                    <td>
+                                        {{ payment.transaction_reference }}
+                                    </td>
+
+                                    <td>
+                                        {{ payment.payment_date|date:"d M Y" }}
+                                    </td>
+
+                                    <td>
+
+                                        {% if payment.status == 'VERIFIED' %}
+
+                                            <span class="badge bg-success">
+                                                Verified
+                                            </span>
+
+                                        {% elif payment.status == 'REJECTED' %}
+
+                                            <span class="badge bg-danger">
+                                                Rejected
+                                            </span>
+
+                                        {% else %}
+
+                                            <span class="badge bg-warning text-dark">
+                                                Pending
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+                                    <td>
+
+                                        {% if payment.status == 'PENDING' %}
+
+                                            <form method="POST"
+                                                  action="{% url 'payment_verify' payment.id %}"
+                                                  class="mb-2">
+
+                                                {% csrf_token %}
+
+                                                <button type="submit"
+                                                        class="btn btn-success btn-sm w-100">
+                                                    Verify
+                                                </button>
+
+                                            </form>
+
+                                            <form method="POST"
+                                                  action="{% url 'payment_reject' payment.id %}">
+
+                                                {% csrf_token %}
+
+                                                <input type="text"
+                                                       name="staff_remarks"
+                                                       class="form-control form-control-sm mb-2"
+                                                       placeholder="Reason for rejection"
+                                                       required>
+
+                                                <button type="submit"
+                                                        class="btn btn-danger btn-sm w-100">
+                                                    Reject
+                                                </button>
+
+                                            </form>
+
+                                        {% else %}
+
+                                            <small class="text-muted">
+                                                {{ payment.staff_remarks|default:"Processed" }}
+                                            </small>
+
+                                        {% endif %}
+
+                                    </td>
+
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            {% else %}
+
+                <div class="text-center py-5">
+
+                    <h5>No Payment Submissions</h5>
+
+                    <p class="text-muted">
+                        Customer payment submissions will appear here.
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

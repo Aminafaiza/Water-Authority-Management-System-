@@ -1,0 +1,214 @@
+
+{% extends 'base.html' %}
+
+{% block title %}My Water Bills | AquaCare{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <!-- Page Heading -->
+    <div class="mb-4">
+        <h2>My Water Bills</h2>
+        <p class="text-muted">
+            View your water billing history and outstanding amounts.
+        </p>
+    </div>
+
+    <!-- Bill Statistics -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm p-3 h-100">
+                <small class="text-muted">Total Bills</small>
+                <h3>{{ total_bills }}</h3>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm p-3 h-100">
+                <small class="text-muted">Pending</small>
+                <h3 class="text-warning">{{ pending_bills }}</h3>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm p-3 h-100">
+                <small class="text-muted">Paid</small>
+                <h3 class="text-success">{{ paid_bills }}</h3>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm p-3 h-100">
+                <small class="text-muted">Overdue</small>
+                <h3 class="text-danger">{{ overdue_bills }}</h3>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Billing History -->
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-header bg-white py-3">
+            <h5 class="mb-0">Billing History</h5>
+        </div>
+
+        <div class="card-body">
+
+            {% if bills %}
+
+                <div class="table-responsive">
+
+                    <table class="table table-hover align-middle">
+
+                        <thead class="table-light">
+                            <tr>
+                                <th>Bill Number</th>
+                                <th>Connection</th>
+                                <th>Consumption</th>
+                                <th>Amount</th>
+                                <th>Due Date</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            {% for bill in bills %}
+
+                                <tr>
+
+                                    <!-- Bill Number -->
+                                    <td>
+                                        <strong>{{ bill.bill_number }}</strong>
+                                    </td>
+
+                                    <!-- Connection -->
+                                    <td>
+                                        {{ bill.connection.connection_number }}
+                                    </td>
+
+                                    <!-- Consumption -->
+                                    <td>
+                                        {{ bill.consumption }} KL
+                                    </td>
+
+                                    <!-- Amount -->
+                                    <td>
+                                        <strong>
+                                            ₹{{ bill.total_amount|floatformat:2 }}
+                                        </strong>
+                                    </td>
+
+                                    <!-- Due Date -->
+                                    <td>
+                                        {{ bill.due_date|date:"d M Y" }}
+                                    </td>
+
+                                    <!-- Bill Status -->
+                                    <td>
+
+                                        {% if bill.status == 'PAID' %}
+
+                                            <span class="badge bg-success">
+                                                Paid
+                                            </span>
+
+                                        {% elif bill.status == 'OVERDUE' %}
+
+                                            <span class="badge bg-danger">
+                                                Overdue
+                                            </span>
+
+                                        {% else %}
+
+                                            <span class="badge bg-warning text-dark">
+                                                Pending
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+                                    <!-- Actions -->
+                                    <td>
+
+                                        <div class="d-flex flex-wrap gap-2">
+
+                                            <!-- View Bill -->
+                                            <a href="{% url 'bill_detail' bill.id %}"
+                                               class="btn btn-outline-primary btn-sm">
+                                                <i class="bi bi-eye"></i>
+                                                View
+                                            </a>
+
+                                            {% if bill.status != 'PAID' %}
+
+                                                <!-- Pay Now -->
+                                                <a href="{% url 'submit_payment' bill.id %}"
+                                                   class="btn btn-success btn-sm">
+                                                    <i class="bi bi-credit-card"></i>
+                                                    Pay Now
+                                                </a>
+
+                                            {% else %}
+
+                                                <span class="text-success small fw-semibold">
+                                                    <i class="bi bi-check-circle-fill"></i>
+                                                    Completed
+                                                </span>
+
+                                            {% endif %}
+
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            {% else %}
+
+                <!-- Empty State -->
+                <div class="text-center py-5">
+
+                    <div class="display-5 mb-3">🧾</div>
+
+                    <h5>No Bills Available</h5>
+
+                    <p class="text-muted">
+                        Your water bills will appear here
+                        once staff generates them.
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+    </div>
+
+    <!-- Payment History Link -->
+    <div class="mt-4 text-end">
+
+        <a href="{% url 'payment_history' %}"
+           class="btn btn-outline-dark">
+            <i class="bi bi-clock-history"></i>
+            View Payment History
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}
